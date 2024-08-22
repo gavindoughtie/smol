@@ -1,0 +1,19 @@
+html {
+  font-family: Helvetica, Arial, sans-serif;
+  margin: 1em;
+}
+
+.explainer {
+  max-width: 50vw;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+}
+
+#content {
+ background-color: lightgray;
+ padding: 1em;
+ height: 50vh;
+}

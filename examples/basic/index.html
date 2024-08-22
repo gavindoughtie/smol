@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Navigation API Test</title>
+    <link rel="stylesheet" href="basic.css" />
+  </head>
+  <h1><a href="/root">Navigation API Test</a></h1>
+  <div class="app">
+    <ul id="menu">
+      <li><a href="/foo">Foo</a></li>
+      <li><a href="/foo/my_id">Foo with My ID</a></li>
+      <li><a href="/bar">Bar</a></li>
+      <li><a href="/baz">Async Baz</a></li>
+    </ul>
+    <div id="content">
+      <div class="explainer">
+        <p>
+          Hacky little example of the new
+          <a
+            href="https://developer.chrome.com/docs/web-platform/navigation-api"
+            >Navigation API.</a
+          >
+        </p>
+        <p>
+          Polyfills are available for
+          <a href="https://github.com/kenchris/urlpattern-polyfill" target="_"
+            >URLPattern</a
+          >
+          and
+          <a href="https://github.com/virtualstate/navigation" target="_"
+            >Navigation API</a
+          >.
+        </p>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="basic.ts"></script>
+</html>
