@@ -11,8 +11,10 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@elysiajs/static": "^1.1.0",
     "bun": "^1.1.25",
     "elysia": "^1.1.7",
+    "elysia-autoload": "^1.2.1",
     "urlpattern-polyfill": "^10.0.0"
   }
 }

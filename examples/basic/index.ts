@@ -1,16 +1,47 @@
-import { Elysia } from 'elysia';
+import { Elysia } from "elysia";
+
+// import { autoload } from "elysia-autoload";
+import { staticPlugin } from "@elysiajs/static";
 
 const transpiler = new Bun.Transpiler({
   loader: "tsx", // "js | "jsx" | "ts" | "tsx"
 });
 
+async function getTranspiledResponse(filePath: string) {
+  const contents = await Bun.file(filePath).text();
+  const transpiled = transpiler.transformSync(contents);
+  return new Response(transpiled, {
+    headers: { "Content-Type": "text/javascript" },
+  });
+}
+
 const app = new Elysia()
-  .get("basic.css", () => Bun.file("./basic.css"))
-  .get("basic.ts", () => Bun.file("./basic.js"))
-  // .get("basic.ts", () =>
-  //   transpiler.transformSync(Bun.file("./basic.ts").toString())
+  // .use(
+  //   await autoload({
+  //     pattern: "**/*.ts",
+  //     dir: "./routes/exports",
+  //   })
   // )
-  .get("*", () => Bun.file("./index.html"))
+  .get("/", () => Bun.file("./index.html"))
+  .get("/src/:tsfile", async (result: any) => {
+    const filePath = `${import.meta.dir}/../..${result?.path}`;
+    return getTranspiledResponse(filePath);
+  })
+  .get("basic.ts", async (result: any) => {
+    const filePath = `${import.meta.dir}${result?.path}`;
+    return getTranspiledResponse(filePath);
+  })
+  .get("*", async (result: any) => {
+    return Response.redirect(`/`, 301);
+  })
+  .use(
+    staticPlugin({
+      assets: "public",
+      prefix: "/",
+    })
+  )
   .listen(8080);
 
-console.log(`🦊 Elysia is running at on port ${app.server?.port}...`);
+export type ElysiaApp = typeof app;
+
+console.log(`SMOL is running at http://localhost:${app.server?.port}`);
