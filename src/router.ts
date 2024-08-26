@@ -46,7 +46,6 @@ export class Router {
   getRouteHandler(url: URL): [RouteHandler, URLPattern] | undefined {
     const pathname = url.pathname;
     for (let pattern of this.routes.keys()) {
-      console.log(`testing`, pattern);
       if (pattern.test({ pathname })) {
         const handler = this.routes.get(pattern);
         if (!handler) {
@@ -65,22 +64,42 @@ export class Router {
       return;
     }
     const url = new URL(e.destination.url);
+    const [handler, pattern] = this.handlerForUrl(url);
+    if (handler && pattern) {
+      e.intercept({
+        handler: () => handler(e, url, pattern),
+      });
+    }
+  }
+
+  handlerForUrl(url: URL): [RouteHandler | undefined, URLPattern | undefined] {
     const handlerInfo = this.getRouteHandler(url);
     if (!handlerInfo) {
-      return;
+      return [undefined, undefined];
     }
-    let handler: RouteHandler;
-    let pattern: URLPattern;
+    let handler: RouteHandler | undefined = undefined;
+    let pattern: URLPattern | undefined = undefined;
     if (handlerInfo?.length) {
       handler = handlerInfo[0];
       pattern = handlerInfo[1];
     }
-    e.intercept({
-      handler: () => handler(e, url, pattern),
-    });
+    return [handler, pattern];
   }
 
-  listenForNav() {
+  async setInitialRoute() {
+    const url = new URL(location.href);
+    const [handler, pattern] = this.handlerForUrl(url);
+    if (handler && pattern) {
+      await handler(
+        { destination: { url: location.href } } as NavigateEvent,
+        url,
+        pattern
+      );
+    }
+  }
+
+  async listenForNav() {
+    await this.setInitialRoute();
     this.navigation.addEventListener("navigate", this.handleNav.bind(this));
   }
 }

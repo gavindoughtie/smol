@@ -1,4 +1,4 @@
-import { Router } from '../../src/router.ts';
+import { Router } from "../../src/router.ts";
 
 const router = new Router();
 (globalThis as any)["router"] = router;
@@ -51,15 +51,16 @@ async function bazHandler(e: NavigateEvent, url: URL, pattern: URLPattern) {
 }
 
 function initRoutes() {
-  router.addRoute("root", rootHandler);
+  router.addRoute("/", rootHandler);
   router.addRoute("foo/:subfoo?", fooHandler);
   router.addRoute("bar", barHandler);
   router.addRoute("baz", bazHandler);
 }
 
-function main() {
+async function main() {
   initRoutes();
-  router.listenForNav();
+  await router.listenForNav();
+  document.documentElement.removeAttribute("initial-route-pending");
 }
 
 main();
